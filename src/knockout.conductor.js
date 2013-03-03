@@ -9,6 +9,10 @@ ko.conductor = {
 		if (!templateName && viewModel) {
 			templateName = ko.conductor.findTemplate(viewModel);
 		}
+		if ((area.activeView == templateName) && (area.activeViewModel === viewModel)) {
+			// Already loaded, so skip the rest
+			return;
+		}
 		if (!templateName && !viewModel) {
 			ko.utils.setHtml(area.element, '');
 		}
@@ -17,7 +21,7 @@ ko.conductor = {
 				null, area.element, 'replaceChildren');
 		}
 		area.activeView = templateName;
-		area.activeViewModel = areaName;
+		area.activeViewModel = viewModel;
 	},
 	findArea: function(obj) {
 		if (typeof obj === 'string') {

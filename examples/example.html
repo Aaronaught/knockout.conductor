@@ -8,7 +8,7 @@
 		<meta http-equiv= "pragma" content="no-cache" />
 		<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 	</head>
-	<body>
+	<body data-bind="attr: { class: settings().themeName }">
 		<section id="top">
 			<h1>Knockout Conductor Example</h1>
 		</section>
@@ -16,7 +16,7 @@
 			<h2>Tasks</h2>
 			<ul>
 				<li><a href="#" data-bind="activate: { viewModel: home, area: 'main' }">Home</a></li>
-				<li><a href="#" data-bind="activate: { viewModel: messages, area: 'main' }">Inbox</a></li>
+				<li><a href="#" data-bind="activate: { viewModel: messages, view: 'Inbox', area: 'main' }">Inbox</a></li>
 				<li><a href="#" data-bind="activate: { viewModel: settings, area: 'main' }">Settings</a></li>
 				<li><a href="#" data-bind="activate: { view: 'help', area: 'main' }">Help</a></li>
 			</ul>
@@ -32,10 +32,12 @@
 		<script type="text/javascript" src="date.js"></script>
 		<script type="text/javascript" src="HomeViewModel.js"></script>
 		<script type="text/javascript" src="MessagesViewModel.js"></script>
+		<script type="text/javascript" src="SettingsViewModel.js"></script>
 		<script type="text/javascript" src="ShellViewModel.js"></script>
 		<script type="text/javascript">
 			$(function() {
 				var viewModel = new ShellViewModel();
+				window.viewModel = viewModel;
 				ko.applyBindings(viewModel);
 			});
 		</script>
@@ -50,7 +52,7 @@
 			<p><a href="#" data-bind="activate: $root.messages">View your messages</a></p>
 		</script>
 		
-		<script id="MessagesView" type="text/html">
+		<script id="Inbox" type="text/html">
 			<h2>Inbox</h2>
 			<table class="messages">
 				<thead>
@@ -68,6 +70,55 @@
 					</tr>
 				</tbody>
 			</table>
+		</script>
+		
+		<script id="SettingsView" type="text/html">
+			<h2>Settings</h2>
+			<ul class="settings">
+				<li>
+					<label for="theme">Theme:</label>
+					<div>
+						<select id="theme" data-bind="value: themeName">
+							<option value="">Nice</option>
+							<option value="blinding">Blinding</option>
+						</select>
+					</div>
+				</li>
+			</ul>
+			<div class="clear"></div>
+			<p><a href="#" data-bind="activate: $root.home">Return Home</a></p>
+		</script>
+		
+		<script id="help" type="text/html">
+			<h2>Help</h2>
+			<p>
+				Click on an item under "Tasks" to activate that view and/or view model in the conductor.
+			</p>
+			<p>
+				Binding context is preserved, so individual views can reference the
+				<code>$parent</code> or <code>$root</code>.
+				This is how the "View your messages" and "Return Home" links work.
+			</p>
+			<p>
+				You can override the automatic view detection by specifying a <code>view</code>
+				property in the <code>activate</code> binding. The "Inbox" link activates a
+				<code>MessageViewModel</code> using a view called <code>Inbox</code>.
+			</p>
+			<p>
+				You can also use the <code>view</code> property to activate static views without
+				a view model. For example, the "Help" link you just clicked on doesn't activate
+				a view model, just a view.
+			</p>
+			<p>
+				In a real-world application, you would probably want to combine this with a
+				framework like <a href="http://sammyjs.org/">Sammy.js</a> in order to store
+				the active view and data in the URL fragment. You can grab this from the
+				<code>activeView</code> and <code>activeViewModel</code> properties from the
+				area, which you can get by calling <code>ko.conductor.findArea(name)</code>.
+			</p>
+			<p>
+				That's it!
+			</p>
 		</script>
 	</body>
 </html>

@@ -61,3 +61,38 @@ table.messages td, table.messages th
 .unread {
 	font-weight: bold;
 }
+
+.blinding {
+	background: #FF00FF;
+}
+
+.blinding #top, .blinding #left, .blinding #middle {
+	background: #00ff00;
+	color: #ff3300;
+}
+
+ul.settings {
+	list-style: none;
+	padding-left: 0;
+}
+
+ul.settings li {
+	clear: both;
+}
+
+ul.settings li label {
+	float: left;
+	width: 100px;
+}
+
+ul.settings li div {
+	float: left;
+	width: 150px;
+}
+
+.clear {
+	clear: both;
+}
+
+code {
+}
