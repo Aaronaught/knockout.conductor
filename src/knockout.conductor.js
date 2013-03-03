@@ -1,7 +1,7 @@
 ko.conductor = {
 	areas: {},
 	nameKey: '@koConductorViewModelName',
-	activate: function(areaName, viewModel, templateName) {
+	activate: function(areaName, viewModel, templateName, bindingContext) {
 		var area = ko.conductor.findArea(areaName);
 		if (!area) {
 			throw 'Area "' + areaName + '" does not exist.';
@@ -13,7 +13,8 @@ ko.conductor = {
 			ko.utils.setHtml(area.element, '');
 		}
 		else {
-			ko.applyBindingsToNode(area.element, { template: { name: templateName, data: viewModel } });
+			ko.renderTemplate(templateName, bindingContext.createChildContext(viewModel),
+				null, area.element, 'replaceChildren');
 		}
 		area.activeView = templateName;
 		area.activeViewModel = areaName;
@@ -78,7 +79,7 @@ ko.bindingHandlers['activate'] = {
 			var viewName = ko.utils.unwrapObservable(value.view);
 			return {
 				click: function() {
-					ko.conductor.activate(area.name, viewModelToActivate, viewName);
+					ko.conductor.activate(area.name, viewModelToActivate, viewName, bindingContext);
 				}
 			};
 		};
@@ -104,7 +105,8 @@ ko.bindingHandlers['area'] = {
 		if (value.defaultViewModel || value.defaultView) {
 			setTimeout(function() { ko.conductor.activate(areaName,
 				ko.utils.unwrapObservable(value.defaultViewModel),
-				ko.utils.unwrapObservable(value.defaultView)); }, 0);
+				ko.utils.unwrapObservable(value.defaultView),
+				bindingContext); }, 0);
 		}
 	}
 };

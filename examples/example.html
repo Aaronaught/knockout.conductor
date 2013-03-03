@@ -16,7 +16,7 @@
 			<h2>Tasks</h2>
 			<ul>
 				<li><a href="#" data-bind="activate: { viewModel: home, area: 'main' }">Home</a></li>
-				<li><a href="#" data-bind="activate: { viewModel: messages, area: 'main' }">Messages</a></li>
+				<li><a href="#" data-bind="activate: { viewModel: messages, area: 'main' }">Inbox</a></li>
 				<li><a href="#" data-bind="activate: { viewModel: settings, area: 'main' }">Settings</a></li>
 				<li><a href="#" data-bind="activate: { view: 'help', area: 'main' }">Help</a></li>
 			</ul>
@@ -29,7 +29,9 @@
 		<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="knockout-2.2.1.debug.js"></script>
 		<script type="text/javascript" src="../src/knockout.conductor.js"></script>
+		<script type="text/javascript" src="date.js"></script>
 		<script type="text/javascript" src="HomeViewModel.js"></script>
+		<script type="text/javascript" src="MessagesViewModel.js"></script>
 		<script type="text/javascript" src="ShellViewModel.js"></script>
 		<script type="text/javascript">
 			$(function() {
@@ -37,9 +39,35 @@
 				ko.applyBindings(viewModel);
 			});
 		</script>
+		
 		<script id="HomeView" type="text/html">
 			<h2>Home</h2>
 			<p>Welcome, <span data-bind="text: name"></span>!</p>
+			<p>
+				You have <span data-bind="text: unreadMessageCount" style="font-weight: bold"></span>
+				new messages.
+			</p>
+			<p><a href="#" data-bind="activate: $root.messages">View your messages</a></p>
+		</script>
+		
+		<script id="MessagesView" type="text/html">
+			<h2>Inbox</h2>
+			<table class="messages">
+				<thead>
+					<tr>
+						<th>From</th>
+						<th>Received On</th>
+						<th>Subject</th>
+					</tr>
+				</thead>
+				<tbody data-bind="foreach: items">
+					<tr data-bind="css: { unread: unread }">
+						<td data-bind="text: from"></td>
+						<td data-bind="text: receivedOn.toString('yyyy-MM-dd')"></td>
+						<td data-bind="text: subject"></td>
+					</tr>
+				</tbody>
+			</table>
 		</script>
 	</body>
 </html>
