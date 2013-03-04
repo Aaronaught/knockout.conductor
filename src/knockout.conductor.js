@@ -1,26 +1,26 @@
 ko.conductor = {
 	areas: {},
 	nameKey: '@koConductorViewModelName',
-	activate: function(areaName, viewModel, templateName, bindingContext) {
+	activate: function(areaName, viewModel, viewName, bindingContext) {
 		var area = ko.conductor.findArea(areaName);
 		if (!area) {
 			throw 'Area "' + areaName + '" does not exist.';
 		}
-		if (!templateName && viewModel) {
-			templateName = ko.conductor.findTemplate(viewModel);
+		if (!viewName && viewModel) {
+			viewName = ko.conductor.findView(viewModel);
 		}
-		if ((area.activeView == templateName) && (area.activeViewModel === viewModel)) {
+		if ((area.activeView == viewName) && (area.activeViewModel === viewModel)) {
 			// Already loaded, so skip the rest
 			return;
 		}
-		if (!templateName && !viewModel) {
+		if (!viewName && !viewModel) {
 			ko.utils.setHtml(area.element, '');
 		}
 		else {
-			ko.renderTemplate(templateName, bindingContext.createChildContext(viewModel),
+			ko.renderTemplate(viewName, bindingContext.createChildContext(viewModel),
 				null, area.element, 'replaceChildren');
 		}
-		area.activeView = templateName;
+		area.activeView = viewName;
 		area.activeViewModel = viewModel;
 	},
 	findArea: function(obj) {
@@ -42,7 +42,7 @@ ko.conductor = {
 		}
 		return null;
 	},
-	findTemplate: function(viewModel) {
+	findView: function(viewModel) {
 		if (!viewModel) {
 			return null;
 		}
@@ -54,12 +54,12 @@ ko.conductor = {
 		if (lc.endsWith('viewmodel')) {
 			return viewModelName.substring(0, viewModelName.length - 5);
 		}
-		var templateName = viewModelName + 'View';
-		if (!(templateName in window)) {
+		var viewName = viewModelName + 'View';
+		if (!(viewName in window)) {
 			throw 'Cannot resolve template for view model: No template named "' + 
-				templateName + '" exists in the current window.';
+				viewName + '" exists in the current window.';
 		}
-		return templateName;
+		return viewName;
 	},
 	name: function(viewModel, name) {
 		if (!name) {
@@ -99,8 +99,7 @@ ko.bindingHandlers['area'] = {
 		while (typeof value === 'function') {
 			value = value(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
 		}
-		var areaName = (typeof value === 'string') ? 
-			{ name: value } : ko.utils.unwrapObservable(value.name);
+		var areaName = (typeof value === 'string') ? value : ko.utils.unwrapObservable(value.name);
 		if (!areaName) {
 			throw 'Area must have a name.';
 		}
