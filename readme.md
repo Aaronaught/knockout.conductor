@@ -14,7 +14,7 @@ The most common use cases for the Conductor are:
 
 Essentially any UI composition pattern based on polymorphism or duck typing benefits (a lot) from a flexible Conductor.
 
-What makes the Conductor particularly different from what Knockout already via its `template` binding is that the Conductor is meant to handle *different views*, which is very different from simply pumping an observable into a static template.
+What makes the Conductor particularly different from what Knockout already does via its `template` binding is that the Conductor is meant to handle *different views*, which is very different from simply pumping an observable into a static template.
 
 To put it another way: Templates expose different *data* or *entities* whereas Conductors can expose different *features* or *screens*.
 
@@ -22,7 +22,7 @@ To put it another way: Templates expose different *data* or *entities* whereas C
 
 ###Component View Model
 
-Because JavaScript doesn't have a particularly reliable metadata system, you'll need to name your view model. Instead of forcing you to implement a specific property name, knockout.conductor provides a utility method to name your view model, which stores it in a reserved field:
+Because JavaScript doesn't have a particularly reliable metadata system, you'll need to name your view model. Fortunately, instead of forcing you to implement a specific property name, Knockout.Conductor provides a utility method which stores it in a reserved field to keep it private:
 
 ```javascript
 function HomeViewModel() {
@@ -75,15 +75,19 @@ KO.Conductor uses a convention-based system for finding the view based on the vi
 
 ###Creating the View
 
-Last but not least, you need the actual view. KO.Conductor hooks into Knockout's templating system so this is just a matter of declaring a script template with the correct view name:
+Last but not least, you need the actual view. KO.Conductor hooks into Knockout's templating system so this is just a matter of declaring a script template with the view name as the ID:
 
 ```html
 <script id="HomeView" type="text/html">
-    <p>Welcome, <span data-bind="text: name"></span>!</p>
+    <p>Welcome,
+      <span data-bind="text: name"></span>!
+    </p>
 </script>
 ```
 
 You're done! See the examples for something a little more comprehensive and concrete.
+
+---
 
 ##View Models are Optional
 
@@ -107,7 +111,7 @@ This will cause KO.Conductor to load the specified view model and/or view when t
 
 If you don't like the convention KO.Conductor uses for resolving view names, change it!
 
-The function is `ko.conductor.findView`, which takes one parameter, `viewModel`. Simply replace it with another function to change the behaviour.
+The function is `ko.conductor.findView`, which takes one parameter, `viewModel`, and returns the view name. Simply replace it with another function to change the behaviour.
 
 You can use the utility function `ko.conductor.name(viewModel)` to get the view model's name, if it has one.
 
@@ -124,6 +128,7 @@ This is still a work in progress. It doesn't have a lot of the features that the
 * Activation/deactivation events
 * Deactivation guards
 * Eliminating the requirement to "name" view models
+* Integration with [Sammy.js](http://sammyjs.org/) and/or similar frameworks
 * Specifications/unit tests for all the functionality
 
 Other ideas are welcome, of course; feel free to submit an issue.
