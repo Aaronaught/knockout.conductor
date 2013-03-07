@@ -85,6 +85,9 @@
 			return viewName;
 		},
 		name: function(viewModel, name) {
+			if (!viewModel) {
+				return null;
+			}
 			if (!name) {
 				return (ko.conductor.nameKey in viewModel) ? 
 					viewModel[ko.conductor.nameKey] : null;
