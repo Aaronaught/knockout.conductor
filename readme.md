@@ -121,12 +121,37 @@ You can retrieve the state of any area using `ko.conductor.findArea(obj)`, where
 
 Whenever KO.Conductor changes the active component in an area, it sets the `area.activeView` and `area.activeViewModel` properties. You can use these to save in a cookie, URL fragment, etc.
 
+##Activation/Deactivation Events
+
+Knockout.Conductor allows you to intercept the activation and deactivation of views before and after they happen. Register the callbacks like so:
+
+```javascript
+// Runs after activation
+ko.conductor.activated(function(element, area, viewModel, view) { ... });
+
+// Runs before activation
+ko.conductor.activating(function(element, area, viewModel, view) { return true; });
+
+// Runs after deactivation
+ko.conductor.deactivated(function(element, area, viewModel, view) { ... });
+
+// Runs before deactivation
+ko.conductor.deactivating(function(element, area, viewModel, view) { return true; });
+```
+
+The `activating` and `deactivating` events also act as guards; you can prevent the activation/deactivation from happening by simply returning `false` or anything falsy from the callback. You do not need to return anything from the `activated` and `deactivated` callbacks.
+
+In all of these callbacks, the parameters are the same:
+
+* `element` is the actual HTML element containing the area. You can use this to perform DOM manipulation.
+* `area` is the name of the area being targeted, e.g. `'main'`.
+* `viewModel` is the view model object being activated or deactivated.
+* `view` is the name of the view being activated or deactivated.
+
 ##What's Missing?
 
 This is still a work in progress. It doesn't have a lot of the features that the CM Conductor has. Right now the road map is:
 
-* Activation/deactivation events
-* Deactivation guards
 * Eliminating the requirement to "name" view models
 * Integration with [Sammy.js](http://sammyjs.org/) and/or similar frameworks
 * Specifications/unit tests for all the functionality
