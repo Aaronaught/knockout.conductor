@@ -63,7 +63,7 @@
 						$transitionElement.css('left', curWidth + padding + 'px');
 						break;
 					case 'left':
-						$currentElement.css('left', transWidth + 'px');
+						$currentElement.css('left', (transWidth + padding) + 'px');
 						$container.css('left', -(transWidth + padding) + 'px');
 						break;
 				}
@@ -91,7 +91,7 @@
 			slideRight: function($container, $currentElement, $transitionElement, padding, duration, easing, callback) {
 				ko.conductor.transitions.slide($container, $currentElement, $transitionElement, duration, easing, 'left', padding,
 					function() {
-						var offset = $(currentElement).position().left;
+						var offset = $currentElement.position().left;
 						return { x: offset };
 					},
 					callback);
