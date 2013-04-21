@@ -4,4 +4,9 @@ function ShellViewModel() {
 	self.home = ko.observable(new HomeViewModel());
 	self.messages = ko.observable(new MessagesViewModel());
 	self.settings = ko.observable(new SettingsViewModel());
+	
+	self.selectTransition = function(viewModel, oldViewName, newViewName) {
+		var effect = (newViewName == 'HomeView') ? 'slideRight' : 'slideLeft';
+		return { effect: effect, delay: 1000, easing: 'easeOutQuint' };
+	};
 }

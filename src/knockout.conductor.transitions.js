@@ -106,7 +106,19 @@
 		}
 	});
 	
+	var oldRender = ko.conductor.render;
 	ko.conductor.render = function(area, viewModel, viewName, bindingContext) {
+		var allBindings = ko.bindingProvider.instance.getBindings(area.element, bindingContext);
+		var transitionBinding = allBindings.transition;
+		if (!transitionBinding) {
+			return oldRender(area, viewModel, viewName, bindingContext);
+		}
+		var transition = (typeof transitionBinding === 'function') ?
+			transitionBinding(viewModel, area.activeView, viewName) : 
+			transitionBinding;
+		if (typeof transition === 'string') {
+			transition = { effect: transition };
+		};
 		var container = $(area.element).find('div.transitionContainer').get(0);
 		if (!container) {
 			var containerHtml = '<div class="transitionContainer" style="position: relative" />';
@@ -128,7 +140,7 @@
 			}
 			element.style.display = 'none';
 			$(container).append(element);
-			ko.conductor.transitions.transition(container, currentElement, element, 'slideLeft', 1000, 'easeOutQuint');
+			ko.conductor.transitions.transition(container, currentElement, element, transition.effect, transition.delay, transition.easing);
 		}
 	};
 })(ko, jQuery);
