@@ -39,6 +39,10 @@ html>body #left {
 
 #middle {
 	margin: 24px 20px 20px 190px;
+	overflow: hidden;
+}
+
+#middle .view {
 	padding: 10px;
 	border: 3px double #999;
 }
