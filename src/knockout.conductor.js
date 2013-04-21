@@ -1,3 +1,5 @@
+// TODO: Support activation events as bindings
+
 (function(ko) {
 	var preActivationCallbacks = [];
 	var postActivationCallbacks = [];
@@ -29,13 +31,7 @@
 					return false;
 				}
 			}
-			if (!viewName && !viewModel) {
-				ko.utils.setHtml(area.element, '');
-			}
-			else {
-				ko.renderTemplate(viewName, bindingContext.createChildContext(viewModel),
-					null, area.element, 'replaceChildren');
-			}
+			ko.conductor.render(area.element, viewModel, viewName, bindingContext);
 			for (var i = 0; i < postDeactivationCallbacks.length; i++) {
 				postDeactivationCallbacks[i](area.element, areaName, area.activeViewModel, area.activeView);
 			}
@@ -93,6 +89,15 @@
 					viewModel[ko.conductor.nameKey] : null;
 			}
 			viewModel[ko.conductor.nameKey] = name;
+		},
+		render: function(areaElement, viewModel, viewName, bindingContext) {
+			if (!viewName && !viewModel) {
+				ko.utils.setHtml(areaElement, '');
+			}
+			else {
+				ko.renderTemplate(viewName, bindingContext.createChildContext(viewModel),
+					null, areaElement, 'replaceChildren');
+			}
 		},
 		activated: function(callback) {
 			postActivationCallbacks.push(callback);
