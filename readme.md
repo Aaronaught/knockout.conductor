@@ -148,6 +148,45 @@ In all of these callbacks, the parameters are the same:
 * `viewModel` is the view model object being activated or deactivated.
 * `view` is the name of the view being activated or deactivated.
 
+##Transitions
+
+***(This feature is functional but not stable. Use at your own risk.)***
+
+The Conductor now supports CSS transitions via [jquery.transit](http://ricostacruz.com/jquery.transit/), which also supports fallback to `jquery.animate` for older browsers. You can use it inline:
+
+```html
+<div data-bind="area: 'main', transition: 'slideLeft'">...</div>
+```
+
+With additional parameters this looks like:
+
+```html
+<div data-bind="area: 'main', transition: { effect: 'slideLeft', duration: 1000, easing: 'snap' }">...</div>
+```
+
+Or, for transitions that depend on context (i.e. which views are being activated/deactivated), you can use a selector in your view model:
+
+```html
+<div data-bind="area: 'main', transition: selectTransition">...</div>
+```
+
+```javascript
+function ShellViewModel() {
+    this.selectTransition = function(viewModel, oldViewName, newViewName) {
+        var effect = (newViewName == 'HomeView') ? 'slideRight' : 'slideLeft';
+        return { effect: effect, duration: 1000, easing: 'easeOutQuint' };
+    };
+}
+```
+
+You do **not** need to use any markup or CSS tricks in order to get the transitions to work. The transitions plugin will insert all of the necessary placeholder elements and styles. However, bear in mind that the transitions take place *inside* the area, so if you want styles like borders and backgrounds to move with the rest of the content, then don't apply them *on* the area. To facilitate this, there are two fields you can use to control how the wrapper is generated:
+
+  * `ko.conductor.transitions.viewTagName` refers to the actual element tag that goes inside the area and wraps the view. By default this is `div`, but if you like to have semantic markup, you can change it to HTML5 `section`, `nav`,etc.
+  
+  * `ko.conductor.transitions.viewClassName` specifies the CSS class name that will be added to the wrapper. You can use this for styling all views in a consistent way, e.g. adding borders or backgrounds. The default class name is `view`.
+
+The example uses a single CSS rule (`#middle .view`) to give all of the views a double border.
+
 ##What's Missing?
 
 This is still a work in progress. It doesn't have a lot of the features that the CM Conductor has. Right now the road map is:
