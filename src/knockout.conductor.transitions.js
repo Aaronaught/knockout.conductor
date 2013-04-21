@@ -106,6 +106,10 @@
 		}
 	});
 	
+	ko.conductor.initialized(function(area) {
+		$(area.element).css('overflow', 'hidden');
+	});
+	
 	var oldRender = ko.conductor.render;
 	ko.conductor.render = function(area, viewModel, viewName, bindingContext) {
 		var allBindings = ko.bindingProvider.instance.getBindings(area.element, bindingContext);
@@ -140,7 +144,7 @@
 			}
 			element.style.display = 'none';
 			$(container).append(element);
-			ko.conductor.transitions.transition(container, currentElement, element, transition.effect, transition.delay, transition.easing);
+			ko.conductor.transitions.transition(container, currentElement, element, transition.effect, transition.duration, transition.easing);
 		}
 	};
 })(ko, jQuery);

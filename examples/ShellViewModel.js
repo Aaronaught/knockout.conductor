@@ -7,6 +7,6 @@ function ShellViewModel() {
 	
 	self.selectTransition = function(viewModel, oldViewName, newViewName) {
 		var effect = (newViewName == 'HomeView') ? 'slideRight' : 'slideLeft';
-		return { effect: effect, delay: 1000, easing: 'easeOutQuint' };
+		return { effect: effect, duration: 1000, easing: 'easeOutQuint' };
 	};
 }
