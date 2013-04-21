@@ -5,6 +5,7 @@
 	var postActivationCallbacks = [];
 	var preDeactivationCallbacks = [];
 	var postDeactivationCallbacks = [];
+	var postInitializationCallbacks = [];
 
 	ko.conductor = {
 		areas: {},
@@ -31,7 +32,7 @@
 					return false;
 				}
 			}
-			ko.conductor.render(area.element, viewModel, viewName, bindingContext);
+			ko.conductor.render(area, viewModel, viewName, bindingContext);
 			for (var i = 0; i < postDeactivationCallbacks.length; i++) {
 				postDeactivationCallbacks[i](area.element, areaName, area.activeViewModel, area.activeView);
 			}
@@ -90,13 +91,13 @@
 			}
 			viewModel[ko.conductor.nameKey] = name;
 		},
-		render: function(areaElement, viewModel, viewName, bindingContext) {
+		render: function(area, viewModel, viewName, bindingContext) {
 			if (!viewName && !viewModel) {
-				ko.utils.setHtml(areaElement, '');
+				ko.utils.setHtml(area.element, '');
 			}
 			else {
 				ko.renderTemplate(viewName, bindingContext.createChildContext(viewModel),
-					null, areaElement, 'replaceChildren');
+					null, area.element, 'replaceChildren');
 			}
 		},
 		activated: function(callback) {
@@ -110,6 +111,9 @@
 		},
 		deactivating: function(callback) {
 			preDeactivationCallbacks.push(callback);
+		},
+		initialized: function(callback) {
+			postInitializationCallbacks.push(callback);
 		}
 	};
 
@@ -147,12 +151,22 @@
 				throw 'Area must have a name.';
 			}
 			element.setAttribute('data-ko-conductor-area', areaName);
-			ko.conductor.areas[areaName] = { name: areaName, element: element };
+			var area = ko.conductor.areas[areaName] = { name: areaName, element: element };
 			if (value.defaultViewModel || value.defaultView) {
-				setTimeout(function() { ko.conductor.activate(areaName,
-					ko.utils.unwrapObservable(value.defaultViewModel),
-					ko.utils.unwrapObservable(value.defaultView),
-					bindingContext); }, 0);
+				setTimeout(function() {
+					ko.conductor.activate(areaName,
+						ko.utils.unwrapObservable(value.defaultViewModel),
+						ko.utils.unwrapObservable(value.defaultView),
+						bindingContext);
+					for (var i = 0; i < postInitializationCallbacks.length; i++) {
+						postInitializationCallbacks[i](area);
+					}
+				}, 0);
+			}
+			else {
+				for (var i = 0; i < postInitializationCallbacks.length; i++) {
+					postInitializationCallbacks[i](area);
+				}
 			}
 		}
 	};
