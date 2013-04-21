@@ -40,35 +40,37 @@
 					height: curHeight + 'px'
 				});
 			},
-			tile: function($container, $currentElement, $transitionElement, position) {
+			tile: function($container, $currentElement, $transitionElement, position, padding) {
 				// Show the transition element "off-screen" and adjust container dimensions
 				$transitionElement.show();
+				var maxWidth = $container.width();
+				var maxHeight = $transitionElement.height();
 				var curWidth = $currentElement.outerWidth();
 				var curHeight = $currentElement.outerHeight();
 				var transWidth = $transitionElement.outerWidth();
 				var transHeight = $transitionElement.outerHeight();
-				$container.width(curWidth + transWidth);
+				$container.width(curWidth + transWidth + padding);
 				$container.height(Math.max(curHeight, transHeight));
 
 				// Arrange the elements
 				$transitionElement.css({
 					position: 'absolute',
-					width: transWidth + 'px',
-					height: transHeight + 'px'
+					width: maxWidth + 'px',
+					height: maxHeight + 'px'
 				});
 				switch (position) {
 					case 'right':
-						$transitionElement.css('left', curWidth + 'px');
+						$transitionElement.css('left', curWidth + padding + 'px');
 						break;
 					case 'left':
 						$currentElement.css('left', transWidth + 'px');
-						$container.css('left', -transWidth + 'px');
+						$container.css('left', -(transWidth + padding) + 'px');
 						break;
 				}
 			},
-			slide: function($container, $currentElement, $transitionElement, duration, easing, initialPosition, transformSelector, callback) {
+			slide: function($container, $currentElement, $transitionElement, duration, easing, initialPosition, padding, transformSelector, callback) {
 				ko.conductor.transitions.freeze($container, $currentElement);
-				ko.conductor.transitions.tile($container, $currentElement, $transitionElement, initialPosition);
+				ko.conductor.transitions.tile($container, $currentElement, $transitionElement, initialPosition, padding);
 				var transform = transformSelector($container, $currentElement, $transitionElement);
 				$container.transition(transform, duration, easing,
 					function() {
@@ -78,16 +80,16 @@
 						}
 					});
 			},
-			slideLeft: function($container, $currentElement, $transitionElement, duration, easing, callback) {
-				ko.conductor.transitions.slide($container, $currentElement, $transitionElement, duration, easing, 'right',
+			slideLeft: function($container, $currentElement, $transitionElement, padding, duration, easing, callback) {
+				ko.conductor.transitions.slide($container, $currentElement, $transitionElement, duration, easing, 'right', padding,
 					function() {
 						var offset = -$transitionElement.position().left;
 						return { x: offset };
 					},
 					callback);
 			},
-			slideRight: function($container, $currentElement, $transitionElement, duration, easing, callback) {
-				ko.conductor.transitions.slide($container, $currentElement, $transitionElement, duration, easing, 'left',
+			slideRight: function($container, $currentElement, $transitionElement, padding, duration, easing, callback) {
+				ko.conductor.transitions.slide($container, $currentElement, $transitionElement, duration, easing, 'left', padding,
 					function() {
 						var offset = $(currentElement).position().left;
 						return { x: offset };
@@ -98,7 +100,7 @@
 				var $container = $(container);
 				var $currentElement = $(currentElement);
 				var $transitionElement = $(transitionElement);
-				ko.conductor.transitions[type].call(this, $container, $currentElement, $transitionElement, duration, easing,
+				ko.conductor.transitions[type].call(this, $container, $currentElement, $transitionElement, 30, duration, easing,
 					function() { $currentElement.remove(); });
 			},
 		}
