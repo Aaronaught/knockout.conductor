@@ -112,8 +112,9 @@
 	
 	var oldRender = ko.conductor.render;
 	ko.conductor.render = function(area, viewModel, viewName, bindingContext) {
-		var allBindings = ko.bindingProvider.instance.getBindings(area.element, bindingContext);
-		var transitionBinding = allBindings.transition;
+		var areaBindingContext = ko.contextFor(area.element);
+		var areaBindings = ko.bindingProvider.instance.getBindings(area.element, areaBindingContext);
+		var transitionBinding = areaBindings.transition;
 		if (!transitionBinding) {
 			return oldRender(area, viewModel, viewName, bindingContext);
 		}
