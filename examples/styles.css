@@ -69,7 +69,7 @@ table.messages td, table.messages th
 	background: #FF00FF;
 }
 
-.blinding #top, .blinding #left, .blinding #middle {
+.blinding #top, .blinding #left, .blinding #middle .view {
 	background: #00ff00;
 	color: #ff3300;
 }
